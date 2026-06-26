@@ -4,9 +4,9 @@ import {
  Route
 } from "react-router-dom";
 
-
+import Login from "./pages/login/login";
 import Register from "./pages/register/register";
-// import Dashboard from "./pages/dashboard/dashboard";
+import Dashboard from "./pages/superadmin-dashboard/dashboard";
 
 // import Users from "./pages/users/users";
 // import Admins from "./pages/admins/admins";
@@ -30,7 +30,7 @@ function App() {
       element={<Register />}
     />
 
-    {/* <Route
+    <Route
       path="/login"
       element={<Login />}
     />
@@ -39,6 +39,7 @@ function App() {
       path="/dashboard"
       element={<Dashboard />}
     />
+    {/*
     <Route
  path="/users"
  element={<Users />}
