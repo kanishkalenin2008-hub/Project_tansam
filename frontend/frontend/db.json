@@ -1,0 +1,21 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "name": "Admin",
+      "email": "admin@gmail.com",
+      "password": "1234",
+      "role": "admin"
+    }
+  ],
+
+  "events": [
+    {
+      "id": 1,
+      "title": "Tech Symposium",
+      "date": "2026-06-30",
+      "location": "Auditorium",
+      "description": "Technical event"
+    }
+  ]
+}

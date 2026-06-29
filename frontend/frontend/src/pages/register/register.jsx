@@ -1,106 +1,57 @@
-import "./register.css";
-import { useState } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import BASE_URL from "../../services/api";
+import { registerUser } from "../../services/api";
+import "./register.css";
 
 function Register() {
+  const navigate = useNavigate();
 
- const navigate = useNavigate();
+  const [form, setForm] = useState({
+    name: "",
+    email: "",
+    password: "",
+    age: "",
+    role: "student",
+  });
 
- const [form,setForm] = useState({
+  const handleChange = (e) => {
+    setForm({
+      ...form,
+      [e.target.name]: e.target.value,
+    });
+  };
 
-   name:"",
-   email:"",
-   password:"",
-   age:"",
-   role:"admin"
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
- });
+    const data = await registerUser(form);
 
- const handleChange = (e)=>{
-
-   setForm({
-     ...form,
-     [e.target.name]:e.target.value
-   });
-
- };
-
- const handleSubmit = async(e)=>{
-
-   e.preventDefault();
-
-   const response =
-   await fetch(
-    `${BASE_URL}/register`,
-    {
-      method:"POST",
-      headers:{
-        "Content-Type":"application/json"
-      },
-      body:JSON.stringify(form)
+    if (data?.id) {
+      alert("Registration successful");
+      navigate("/login");
+    } else {
+      alert("Registration failed");
     }
-   );
+  };
 
-   const data =
-   await response.json();
+  return (
+    <div className="register-container">
+      <h2>Register</h2>
 
-   alert(data.message);
+      <form onSubmit={handleSubmit}>
+        <input name="name" placeholder="Name" onChange={handleChange} required />
+        <input name="email" placeholder="Email" onChange={handleChange} required />
+        <input name="password" type="password" placeholder="Password" onChange={handleChange} required />
+        <input name="age" placeholder="Age" onChange={handleChange} required />
 
-   navigate("/");
+        <button type="submit">Register</button>
+      </form>
 
- };
-
- return(
-
-  <div class="register-container">
-
-   <h2>Register</h2>
-
-   <form
-    onSubmit={handleSubmit}
-   >
-
-    <input
-     name="name"
-     placeholder="Name"
-     onChange={handleChange}
-    />
-
-    <input
-     name="email"
-     placeholder="Email"
-     onChange={handleChange}
-    />
-
-    <input
-     name="password"
-     placeholder="Password"
-     onChange={handleChange}
-    />
-
-    <input
-     name="age"
-     placeholder="Age"
-     onChange={handleChange}
-    />
-
-    <button>
-      Register
-    </button>
-    <p>
- Already have an account?
- <a href="/login">
-  Login
- </a>
-</p>
-
-   </form>
-
-  </div>
-
- );
-
+      <p>
+        Already have an account? <a href="/login">Login</a>
+      </p>
+    </div>
+  );
 }
 
 export default Register;

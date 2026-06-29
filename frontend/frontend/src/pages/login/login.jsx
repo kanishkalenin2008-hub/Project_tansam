@@ -1,124 +1,73 @@
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { loginUser } from "../../services/api";
 import "./login.css";
 
-import { useState } from "react";
-
-import {
- useNavigate
-} from "react-router-dom";
-
-import BASE_URL from "../../services/api";
-
 function Login() {
+  const navigate = useNavigate();
 
- const navigate =
- useNavigate();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [message, setMessage] = useState("");
 
- const [form,setForm] =
- useState({
+  const handleLogin = async (e) => {
+    e.preventDefault();
 
-   email:"",
-   password:""
+    try {
+      const res = await loginUser({ email, password });
 
- });
+      console.log("LOGIN RESPONSE:", res);
 
- const handleChange=(e)=>{
+      // ✅ FIX: check backend message OR user object
+      if (res && res.message === "Login successful") {
+        setMessage("Login successful");
 
-   setForm({
-    ...form,
-    [e.target.name]:
-    e.target.value
-   });
-
- };
-
-const handleSubmit = async (e) => {
-
-  e.preventDefault();
-
-  const response = await fetch(
-    `${BASE_URL}/login`,
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(form)
-    }
-  );
-
-  const data = await response.json();
-
-  if (!response.ok) {
-    alert(data.message);
-    return;
-  }
-
-  localStorage.setItem(
-    "token",
-    data.token
-  );
-
-  localStorage.setItem(
-    "user",
-    JSON.stringify(data.user)
-  );
-
-  if (data.user.role === "superadmin") {
-
-    navigate("/superadmin-dashboard");
-
-  } else if (data.user.role === "admin") {
-
-    navigate("/admin-dashboard");
-
-  } else {
-
-    navigate("/dashboard");
-
-  }
-
-};
-
- return(
-
-  <div className="login-container"> 
-
-   <h2>Login</h2>
-
-   <form
-    onSubmit={
-      handleSubmit
-    }
-   >
-
-    <input
-      name="email"
-      placeholder="Email"
-      onChange={
-        handleChange
+        setTimeout(() => {
+          navigate("/dashboard");
+        }, 800);
+      } else {
+        setMessage(res?.message || "Invalid email or password");
       }
-    />
 
-    <input
-      name="password"
-      placeholder="Password"
-      onChange={
-        handleChange
-      }
-    />
+    } catch (error) {
+      console.log(error);
+      setMessage("Server error");
+    }
+  };
 
-    <button>
-      Login
-    </button>
+  return (
+    <div className="login-container">
+      <div className="login-box">
+        <h2>Login</h2>
 
-    
+        <form onSubmit={handleLogin}>
+          <input
+            type="email"
+            placeholder="Enter Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
 
-   </form>
+          <input
+            type="password"
+            placeholder="Enter Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
 
-  </div>
+          <button type="submit">Login</button>
+        </form>
 
- );
+        {message && <p className="msg">{message}</p>}
 
+        <p>
+          Don't have an account? <a href="/register">Register</a>
+        </p>
+      </div>
+    </div>
+  );
 }
 
 export default Login;

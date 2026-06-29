@@ -1,69 +1,26 @@
-import {
- BrowserRouter,
- Routes,
- Route
-} from "react-router-dom";
+import React from "react";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import Login from "./pages/login/login";
 import Register from "./pages/register/register";
-import Dashboard from "./pages/superadmin-dashboard/dashboard";
+import Dashboard from "./pages/superadmindashboard/dashboard";
+import AddEvent from "./pages/add-event/add-event";
+import EventList from "./pages/event-list/event-list";
 
-// import Users from "./pages/users/users";
-// import Admins from "./pages/admins/admins";
-// import Roles from "./pages/roles/roles";
-// import AdminDashboard from "./pages/admin/admindashboard/admindashboard";
 function App() {
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Login />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
 
- return (
-
-  <BrowserRouter>
-
-   <Routes>
-
-    <Route
-      path="/"
-      element={<Register />}
-    />
-
-    <Route
-      path="/register"
-      element={<Register />}
-    />
-
-    <Route
-      path="/login"
-      element={<Login />}
-    />
-
-    <Route
-      path="/dashboard"
-      element={<Dashboard />}
-    />
-    {/*
-    <Route
- path="/users"
- element={<Users />}
-/>
-    <Route
- path="/admins"
- element={<Admins />}
-/>
-    <Route
- path="/roles"
- element={<Roles />}
-/>
-    <Route
-      path="/admin-dashboard"
-      element={<AdminDashboard />} */
-      }
-    
-
-   </Routes>
-
-  </BrowserRouter>
-
- );
-
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/add-event" element={<AddEvent />} />
+        <Route path="/event-list" element={<EventList />} />
+      </Routes>
+    </BrowserRouter>
+  );
 }
 
 export default App;
