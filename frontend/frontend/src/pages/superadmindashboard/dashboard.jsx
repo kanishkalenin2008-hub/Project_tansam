@@ -29,13 +29,12 @@ function Dashboard() {
 
       <div className="dashboard-body">
 
-        {/* SIDEBAR */}
+        {/* SIDEBAR (ONLY THIS, NO INLINE SIDEBAR CODE) */}
         <Sidebar />
 
         {/* MAIN CONTENT */}
         <main className="dashboard-content">
 
-          {/* CARDS SECTION */}
           <div className="cards">
 
             <div className="card">
@@ -55,7 +54,6 @@ function Dashboard() {
 
           </div>
 
-          {/* INFO SECTION */}
           <div className="table-container">
             <h2>Quick Info</h2>
 

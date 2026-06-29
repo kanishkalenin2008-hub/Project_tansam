@@ -1,6 +1,9 @@
+
+
+
+
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { loginUser } from "../../services/api";
 import "./login.css";
 
 function Login() {
@@ -10,29 +13,19 @@ function Login() {
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
 
-  const handleLogin = async (e) => {
+  const handleLogin = (e) => {
     e.preventDefault();
 
-    try {
-      const res = await loginUser({ email, password });
+    console.log("Email:", email);
+    console.log("Password:", password);
 
-      console.log("LOGIN RESPONSE:", res);
+    // show success message
+    setMessage("Login submitted successfully!");
 
-      // ✅ FIX: check backend message OR user object
-      if (res && res.message === "Login successful") {
-        setMessage("Login successful");
-
-        setTimeout(() => {
-          navigate("/dashboard");
-        }, 800);
-      } else {
-        setMessage(res?.message || "Invalid email or password");
-      }
-
-    } catch (error) {
-      console.log(error);
-      setMessage("Server error");
-    }
+    // navigate after 1 second
+    setTimeout(() => {
+      navigate("/dashboard");
+    }, 1000);
   };
 
   return (

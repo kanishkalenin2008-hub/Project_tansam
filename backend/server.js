@@ -1,19 +1,23 @@
 const express = require("express");
-const cors = require("cors");
 const mysql = require("mysql2");
+const cors = require("cors");
 
 const app = express();
+const PORT = 3002;
 
+/* =======================
+   MIDDLEWARE
+======================= */
 app.use(cors());
 app.use(express.json());
 
-/* ======================
+/* =======================
    MYSQL CONNECTION
-====================== */
+======================= */
 const db = mysql.createConnection({
   host: "localhost",
   user: "root",
-  password: "kanishka@lenin_562008",
+  password: "kanishka@lenin_562008", //ange this
   database: "project"
 });
 
@@ -21,145 +25,90 @@ db.connect((err) => {
   if (err) {
     console.log("DB Connection Failed ❌", err);
   } else {
-    console.log("✅ MySQL Connected Successfully");
+    console.log("DB Connected Successfully ✅");
   }
 });
 
-/* ======================
+/* =======================
    LOGIN API
-====================== */
+======================= */
 app.post("/api/auth/login", (req, res) => {
   const { email, password } = req.body;
 
-  if (email === "admin@gmail.com" && password === "1234") {
-    return res.json({
-      success: true,
-      message: "Login successful",
-      user: {
-        email,
-        role: "admin"
-      }
-    });
-  }
+  const sql = "SELECT * FROM users WHERE email = ?";
 
-  res.status(401).json({
-    success: false,
-    message: "Invalid credentials"
-  });
-});
-
-/* ======================
-   ADD EVENT
-====================== */
-app.post("/events", (req, res) => {
-  const { title, date } = req.body;
-
-  const sql =
-    "INSERT INTO events (title, event_date) VALUES (?, ?)";
-
-  db.query(sql, [title, date], (err, result) => {
+  db.query(sql, [email], (err, results) => {
     if (err) {
-      console.log(err);
-
-      return res.status(500).json({
-        success: false,
-        message: "Database error"
-      });
+      return res.status(500).json({ message: "Server error" });
     }
 
-    res.json({
-      success: true,
-      message: "Event added successfully",
-      id: result.insertId
-    });
+    if (results.length === 0) {
+      return res.json({ success: false, message: "User not found" });
+    }
+
+    const user = results[0];
+
+    if (user.password !== password) {
+      return res.json({ success: false, message: "Invalid password" });
+    }
+
+    res.json({ success: true, user });
   });
 });
 
-/* ======================
-   GET ALL EVENTS
-====================== */
+/* =======================
+   EVENTS - GET ALL
+======================= */
 app.get("/events", (req, res) => {
   const sql = "SELECT * FROM events";
 
   db.query(sql, (err, results) => {
     if (err) {
-      return res.status(500).json({
-        success: false,
-        message: "Database error"
-      });
+      return res.status(500).json({ message: "DB Error" });
     }
 
-    const formatted = results.map((event) => ({
-      id: event.id,
-      title: event.title,
-      date: event.event_date
-    }));
-
-    res.json(formatted);
+    res.json(results);
   });
 });
 
-/* ======================
-   GET SINGLE EVENT
-====================== */
-app.get("/events/:id", (req, res) => {
-  const { id } = req.params;
+/* =======================
+   EVENTS - CREATE
+======================= */
+app.post("/events", (req, res) => {
+  const { title, event_date } = req.body;
 
-  const sql = "SELECT * FROM events WHERE id = ?";
+  const sql = "INSERT INTO events (title, event_date) VALUES (?, ?)";
 
-  db.query(sql, [id], (err, results) => {
+  db.query(sql, [title, event_date], (err) => {
     if (err) {
-      return res.status(500).json({
-        success: false
-      });
+      return res.status(500).json({ success: false });
     }
 
-    if (results.length === 0) {
-      return res.status(404).json({
-        success: false,
-        message: "Event not found"
-      });
-    }
-
-    res.json({
-      success: true,
-      event: {
-        id: results[0].id,
-        title: results[0].title,
-        date: results[0].event_date
-      }
-    });
+    res.json({ success: true });
   });
 });
 
-/* ======================
-   UPDATE EVENT
-====================== */
+/* =======================
+   EVENTS - UPDATE
+======================= */
 app.put("/events/:id", (req, res) => {
   const { id } = req.params;
-  const { title, date } = req.body;
+  const { title, event_date } = req.body;
 
-  const sql =
-    "UPDATE events SET title = ?, event_date = ? WHERE id = ?";
+  const sql = "UPDATE events SET title = ?, event_date = ? WHERE id = ?";
 
-  db.query(sql, [title, date, id], (err) => {
+  db.query(sql, [title, event_date, id], (err) => {
     if (err) {
-      return res.status(500).json({
-        success: false,
-        message: "Database error"
-      });
+      return res.status(500).json({ success: false });
     }
 
-    res.json({
-      success: true,
-      message: "Event updated successfully"
-    });
+    res.json({ success: true });
   });
 });
 
-/* ======================
-   DELETE EVENT
-====================== */
+/* =======================
+   EVENTS - DELETE
+======================= */
 app.delete("/events/:id", (req, res) => {
   const { id } = req.params;
 
@@ -167,22 +116,31 @@ app.delete("/events/:id", (req, res) => {
 
   db.query(sql, [id], (err) => {
     if (err) {
-      return res.status(500).json({
-        success: false,
-        message: "Database error"
-      });
+      return res.status(500).json({ success: false });
     }
 
-    res.json({
-      success: true,
-      message: "Event deleted successfully"
-    });
+    res.json({ success: true });
   });
 });
 
-/* ======================
+/* =======================
+   USERS API
+======================= */
+app.get("/users", (req, res) => {
+  const sql = "SELECT id, name, email FROM users";
+
+  db.query(sql, (err, results) => {
+    if (err) {
+      return res.status(500).json({ message: "DB Error" });
+    }
+
+    res.json(results);
+  });
+});
+
+/* =======================
    START SERVER
-====================== */
-app.listen(3002, () => {
-  console.log("Server Running On Port 3002 🚀");
+======================= */
+app.listen(PORT, () => {
+  console.log(`Server Running On Port ${PORT} 🚀`);
 });
