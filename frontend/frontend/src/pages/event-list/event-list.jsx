@@ -1,17 +1,17 @@
 import React, { useEffect, useState } from "react";
-import { getEvents } from "../../services/api";
 import "./event-list.css";
 
 function EventList() {
   const [events, setEvents] = useState([]);
 
   useEffect(() => {
-    const loadEvents = async () => {
-      const data = await getEvents();
-      setEvents(data);
-    };
-
-    loadEvents();
+    fetch("http://localhost:3002/events")
+      .then((res) => res.json())
+      .then((data) => {
+        console.log("EVENTS FROM DB:", data); // 👈 important check
+        setEvents(data);
+      })
+      .catch((err) => console.log(err));
   }, []);
 
   return (
@@ -25,8 +25,8 @@ function EventList() {
           events.map((event) => (
             <div className="event-card" key={event.id}>
               <h3>{event.title}</h3>
-              <p>Date: {event.date}</p>
-              <p>Location: {event.location}</p>
+              <p><b>Date:</b> {event.date}</p>
+              <p><b>Location:</b> {event.location}</p>
               <p>{event.description}</p>
             </div>
           ))

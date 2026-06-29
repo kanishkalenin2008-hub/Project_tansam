@@ -11,7 +11,8 @@ function Dashboard() {
       try {
         const res = await fetch("http://localhost:3002/events");
         const data = await res.json();
-        setEventCount(data.length);
+
+        setEventCount(Array.isArray(data) ? data.length : 0);
       } catch (error) {
         console.log("Error fetching events:", error);
       }
@@ -60,9 +61,8 @@ function Dashboard() {
 
             <p>
               Welcome to the College Event Management System Dashboard.
-              Here you can manage events, view registrations, and track activities.
+              You can manage events, view event list, and track registrations here.
             </p>
-
           </div>
 
         </main>

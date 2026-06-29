@@ -6,7 +6,6 @@ function AddEvent() {
   const [event, setEvent] = useState({
     title: "",
     date: "",
-    location: "",
     description: "",
   });
 
@@ -25,7 +24,6 @@ function AddEvent() {
       setEvent({
         title: "",
         date: "",
-        location: "",
         description: "",
       });
     } else {
@@ -40,7 +38,7 @@ function AddEvent() {
       <form onSubmit={handleSubmit} className="event-form">
         <input name="title" placeholder="Title" value={event.title} onChange={handleChange} />
         <input name="date" type="date" value={event.date} onChange={handleChange} />
-        <input name="location" placeholder="Location" value={event.location} onChange={handleChange} />
+        {/* <input name="location" placeholder="Location" value={event.location} onChange={handleChange} /> */}
         <textarea name="description" placeholder="Description" value={event.description} onChange={handleChange} />
 
         <button type="submit">Add Event</button>
