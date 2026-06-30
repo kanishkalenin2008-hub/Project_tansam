@@ -1,30 +1,24 @@
 import React from "react";
-import { Link, useNavigate } from "react-router-dom";
 import "./sidebar.css";
+import { Link } from "react-router-dom";
 
 function Sidebar() {
-  const navigate = useNavigate();
-
   return (
     <div className="sidebar">
+
       <h2>Event System</h2>
 
-      <nav className="sidebar-menu">
+      <nav>
         <Link to="/dashboard">Dashboard</Link>
         <Link to="/add-event">Add Event</Link>
         <Link to="/event-list">Event List</Link>
         <Link to="/register">Users</Link>
       </nav>
 
-      <button
-        className="logout-btn"
-        onClick={() => {
-          localStorage.clear();
-          navigate("/login");
-        }}
-      >
-        Logout
-      </button>
+      <div className="sidebar-footer">
+        <Link to="/login">Logout</Link>
+      </div>
+
     </div>
   );
 }
